@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Fernandez Dental Tour Stats</title>
+    <style>
+        body {
+            margin: 20px;
+        }
+        #fernandez-dental-logo {
+            float: right;
+            top: -10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fernandez Dental Tour Stats
+    <img id="fernandez-dental-logo" src="{% static 'fern_logo.jpeg' %}"/></h1>
+    <p>Please, click <a href="/admin/">here</a> in order to login</p>
+    or
+    <p>click <a href="/admin/fern/patient/">here</a> to go directly to the patients.</p>
+    <p>click <a href="/admin/fern/source/">here</a> to go directly to the sources.</p>
+
+</body>
+</html>
