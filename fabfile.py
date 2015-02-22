@@ -9,16 +9,16 @@ fab deploy -H root@demo.jedutils.com
 """
 
 
-ENV_NAME = 'citizen'
-PORT = 8003
+ENV_NAME = 'dental'
+PORT = 8004
 
 
 def gen_unicorn_cmd():
-    return 'gunicorn -w 2 -b 127.0.0.1:{} -n {} citizenship.wsgi:application'.format(PORT, ENV_NAME)
+    return 'gunicorn -w 2 -b 127.0.0.1:{} -n {} dental.wsgi:application'.format(PORT, ENV_NAME)
 
 @task
 def deploy():
-    prob_home = '/var/www/django/citizenship'
+    prob_home = '/var/www/django/dental'
     with cd(prob_home):
         sudo('git pull')
         run('workon {} && python manage.py collectstatic --noinput'.format(ENV_NAME))
