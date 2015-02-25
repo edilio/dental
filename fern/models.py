@@ -19,7 +19,7 @@ GENDER_CHOICES = (
 
 class Patient(models.Model):
     fullname = models.CharField(max_length=50)
-    phone = models.CharField(max_length=15, null=True, blank=True)
+    phone = models.CharField(max_length=15, null=True, blank=True, editable=False)
     source = models.ForeignKey(Source)
     birth_date = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=1, null=True, blank=True, choices=GENDER_CHOICES)

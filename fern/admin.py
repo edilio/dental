@@ -9,7 +9,7 @@ class SourceAdmin(admin.ModelAdmin):
 
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
-    list_display = ('new_patient', 'fullname', 'source', 'tour_date', 'phone', 'gender', 'age', 'birth_date')
+    list_display = ('new_patient', 'fullname', 'source', 'tour_date', 'gender', 'age', 'birth_date')
     list_display_links = ('new_patient', 'fullname',)
     search_fields = ('fullname', 'phone')
     list_filter = ('gender', 'source', 'tour_date', 'new_patient')

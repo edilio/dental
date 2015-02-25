@@ -10,7 +10,7 @@ fab deploy -H root@demo.jedutils.com
 
 
 ENV_NAME = 'dental'
-PORT = 8004
+PORT = 8006
 
 
 def gen_unicorn_cmd():
