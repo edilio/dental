@@ -7,14 +7,14 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fern', '0002_auto_20150222_1747'),
+        ('marketing', '0003_category_lead_spottime'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='patient',
-            name='new_patient',
-            field=models.BooleanField(default=True),
+            model_name='lead',
+            name='email',
+            field=models.EmailField(max_length=75, null=True, blank=True),
             preserve_default=True,
         ),
     ]

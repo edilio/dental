@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'fern',
+    'marketing',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -88,4 +89,5 @@ STATIC_ROOT = '/var/www/html/wmedia/dental/static/'
 
 TEMPLATE_DIRS = (
     (os.path.join(BASE_DIR, 'fern/templates')),
+    (os.path.join(BASE_DIR, 'marketing/templates')),
 )
