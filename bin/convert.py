@@ -18,7 +18,7 @@ from fern.models import *
 
 def save_to_sql(model):
     lst = model.objects.all()
-    print "converting %s len: %d" %(model._meta.db_table,len(lst))
+    print "converting %s len: %d" %(model._meta.db_table, len(lst))
     for obj in lst:
         print obj.__unicode__()
         obj.save(using='mysql')
