@@ -1,28 +1,31 @@
-"""
-Django settings for dental project.
 
-For more information on this file, see
-https://docs.djangoproject.com/en/1.7/topics/settings/
-
-For the full list of settings and their values, see
-https://docs.djangoproject.com/en/1.7/ref/settings/
-"""
-
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import sys
 import os
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+try:
+    import pymysql
+
+    pymysql.install_as_MySQLdb()
+except ImportError:
+    pass
+
+import dotenv
+
+env_file = os.path.join(BASE_DIR, '.env')
+#
+dotenv.read_dotenv(env_file)
+
+DEBUG = bool(int(os.environ.get('DEBUG', '0')))
+TEMPLATE_DEBUG = DEBUG
+IN_DEV = bool(int(os.environ.get('IN_DEV', '0')))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '^n%f8rti)9fz_68r)xs13n4($r$6&)q@-74xcj5*th$c6c(pnp'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -59,12 +62,21 @@ WSGI_APPLICATION = 'dental.wsgi.application'
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#    },
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+	'ENGINE': 'django.db.backends.mysql',
+	
     }
 }
 
+if DATABASES['default']['ENGINE'].endswith('mysql'):
+    DATABASES['default']['NAME'] = os.environ.get('DBASE_NAME')
+    DATABASES['default']['USER'] = os.environ.get('DBASE_USER')
+    DATABASES['default']['PASSWORD'] = os.environ.get('DBASE_PASSWORD')
+    DATABASES['default']['HOST'] = os.environ.get('DBASE_HOST') or ''
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
