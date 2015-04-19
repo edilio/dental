@@ -31,7 +31,7 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(SpotTime)
 class SpotTimeAdmin(admin.ModelAdmin):
     list_display = ('vehicle', 'scheduled', 'air_time')
-    list_filter = ('vehicle', )
+    list_filter = ('vehicle', 'scheduled', 'air_time')
 
 
 @admin.register(Lead)
