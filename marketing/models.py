@@ -1,7 +1,11 @@
+from django.apps import apps
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
-from django.db.models.loading import get_model
+
+
+def get_model(app, model_name):
+    return apps.get_app_config(app).get_model(model_name)
 
 
 class Vehicle(models.Model):

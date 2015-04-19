@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.conf import settings
 
 from .spot_times import guess_vehicle
 from .models import Vehicle, SpotTime
@@ -9,6 +10,7 @@ class TestSpotTime(TestCase):
         self.tv23 = Vehicle.objects.create(name='TV-23')
         self.tv51 = Vehicle.objects.create(name='TV-51')
         self.fm92 = Vehicle.objects.create(name='FM-92.3')
+        settings.USE_TZ = False
 
     def test_guess_vehicle(self):
         # test vehicle is None if no spot times
