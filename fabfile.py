@@ -6,6 +6,8 @@ pip install fabric
 
 how to run:
 fab deploy -H root@demo.jedutils.com
+fab deploy -i ~/.ssh/egallardojedutils.pem -H ubuntu@52.16.31.196
+
 """
 
 
@@ -21,6 +23,6 @@ def deploy():
     prob_home = '/var/www/django/dental'
     with cd(prob_home):
         sudo('git pull')
-        run('workon {} && python manage.py collectstatic --noinput'.format(ENV_NAME))
-        run('workon {} && python manage.py migrate'.format(ENV_NAME))
+        # run('workon {} && python manage.py collectstatic --noinput'.format(ENV_NAME))
+        # run('workon {} && python manage.py migrate'.format(ENV_NAME))
         run('workon {} && {} &'.format(ENV_NAME, gen_unicorn_cmd()))
