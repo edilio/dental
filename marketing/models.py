@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+from django.db.models.loading import get_model
 
 
 class Vehicle(models.Model):
@@ -19,8 +20,25 @@ def guess_year():
         return year
 
 
+def next_index(model_name, app='marketing'):
+    result = 0
+    try:
+        model = get_model(app, model_name)
+
+        qs = model.objects
+        m = qs.reverse()[0]
+        result = m.number
+    except IndexError:
+        pass
+    return result + 1
+
+
+def next_flight():
+    return next_index('Flight')
+
+
 class Flight(models.Model):
-    number = models.PositiveIntegerField(default=1)
+    number = models.PositiveIntegerField(default=next_flight)
     year = models.PositiveSmallIntegerField(default=guess_year)
     first_day = models.DateField()
     last_day = models.DateField()
