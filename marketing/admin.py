@@ -1,7 +1,8 @@
-from django.utils import timezone
 
 from django.contrib import admin
 from .models import Vehicle, Flight, Category, SpotTime, Lead, DentalOffice
+
+from spot_times import guess_vehicle
 
 
 @admin.register(Vehicle)
@@ -47,20 +48,9 @@ class LeadAdmin(admin.ModelAdmin):
             obj.entered_by = request.user
         obj.save()
 
-    @staticmethod
-    def guess_vehicle():
-        now = timezone.now()
-        spot_times = SpotTime.objects.filter(air_time__lte=now).order_by('-air_time')
-        print spot_times
-        try:
-            spot_time = spot_times[0]
-            return spot_time.vehicle
-        except IndexError:
-            return None
-
     def get_form(self, request, obj=None, **kwargs):
         form = super(LeadAdmin, self).get_form(request, obj, **kwargs)
-        vehicle = self.guess_vehicle()
+        vehicle = guess_vehicle()
         if vehicle:
             form.base_fields['vehicle'].initial = vehicle
         return form

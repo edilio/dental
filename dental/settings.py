@@ -102,3 +102,10 @@ TEMPLATE_DIRS = (
     (os.path.join(BASE_DIR, 'fern/templates')),
     (os.path.join(BASE_DIR, 'marketing/templates')),
 )
+
+
+IN_TEST = 'test' in sys.argv
+
+if IN_TEST:
+    DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
+    DATABASES['default']['NAME'] = ':memory:'
