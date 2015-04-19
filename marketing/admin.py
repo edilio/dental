@@ -1,9 +1,14 @@
 from django.contrib import admin
-from .models import Vehicle, Flight, Category, SpotTime, Lead
+from .models import Vehicle, Flight, Category, SpotTime, Lead, DentalOffice
 
 
 @admin.register(Vehicle)
 class VehicleAdmin(admin.ModelAdmin):
+    list_display = ('name', )
+
+
+@admin.register(DentalOffice)
+class DentalOfficeAdmin(admin.ModelAdmin):
     list_display = ('name', )
 
 
@@ -29,10 +34,10 @@ class SpotTimeAdmin(admin.ModelAdmin):
 @admin.register(Lead)
 class LeadAdmin(admin.ModelAdmin):
     list_display = ('vehicle', 'phone_number', 'name', 'birth_date', 'age', 'gender', 'category', 'lm',
-                    'appointment_date',
+                    'appointment_date', 'office',
                     'entered_date', 'entered_by', 'short_comments', 'email')
 
-    list_filter = ('vehicle', 'lm', 'gender', 'category', 'appointment_date', 'entered_by')
+    list_filter = ('vehicle', 'lm', 'gender', 'category', 'appointment_date', 'office', 'entered_by')
     search_fields = ('phone_number', 'name', 'email')
 
     def save_model(self, request, obj, form, change):

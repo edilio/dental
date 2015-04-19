@@ -5,7 +5,7 @@ from fabric.operations import get
 pip install fabric
 
 how to run:
-fab deploy -H root@demo.jedutils.com
+fab deploy -i ~/.ssh/egallardojedutils.pem -H root@dental.jedutils.com
 fab deploy -i ~/.ssh/egallardojedutils.pem -H ubuntu@52.16.31.196
 
 """

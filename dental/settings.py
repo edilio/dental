@@ -67,16 +67,15 @@ DATABASES = {
 #        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #    },
     'default': {
-	'ENGINE': 'django.db.backends.mysql',
-	
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('DBASE_NAME'),
+        'USER': os.environ.get('DBASE_USER'),
+        'PASSWORD': os.environ.get('DBASE_PASSWORD'),
+        'HOST': os.environ.get('DBASE_HOST') or ''
     }
 }
 
-if DATABASES['default']['ENGINE'].endswith('mysql'):
-    DATABASES['default']['NAME'] = os.environ.get('DBASE_NAME')
-    DATABASES['default']['USER'] = os.environ.get('DBASE_USER')
-    DATABASES['default']['PASSWORD'] = os.environ.get('DBASE_PASSWORD')
-    DATABASES['default']['HOST'] = os.environ.get('DBASE_HOST') or ''
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 

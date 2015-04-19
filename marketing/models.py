@@ -44,7 +44,7 @@ class Flight(models.Model):
     last_day = models.DateField()
 
     def save(self, *args, **kwargs):
-        self.year = self.first_day.year
+        self.year = self.last_day.year
         super(Flight, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -70,6 +70,13 @@ class Category(models.Model):
         return self.name
 
 
+class DentalOffice(models.Model):
+    name = models.CharField(max_length=20)
+
+    def __unicode__(self):
+        return self.name
+
+
 GENDER_CHOICES = (
     ('F', 'Female'),
     ('M', 'Male'),
@@ -86,8 +93,10 @@ class Lead(models.Model):
     comments = models.TextField(null=True, blank=True)
     lm = models.BooleanField(help_text='Left Message', default=False)
     appointment_date = models.DateTimeField(null=True, blank=True)
+    office = models.ForeignKey(DentalOffice, null=True, blank=True)
 
     email = models.EmailField(null=True, blank=True)
+
     entered_date = models.DateField(default=timezone.now)
     entered_by = models.ForeignKey(settings.AUTH_USER_MODEL, editable=False)
 

@@ -15,6 +15,8 @@ import django
 django.setup()
 
 from fern.models import *
+from marketing.models import *
+
 
 def save_to_sql(model):
     lst = model.objects.all()
@@ -25,10 +27,9 @@ def save_to_sql(model):
 
 
 def save_all():
-    models = [Source, Patient]
+    models = [Source, Patient, Category, Vehicle, SpotTime, Flight, Lead]
     for model in models:
         save_to_sql(model)
-
 
 
 save_all()
