@@ -48,6 +48,7 @@ class LeadAdmin(admin.ModelAdmin):
 
     list_filter = ('vehicle', 'lm', 'gender', 'category', 'appointment_date', 'office', 'entered_by')
     search_fields = ('phone_number', 'name', 'email')
+    readonly_fields = ('flight', 'entered_by')
 
     def save_model(self, request, obj, form, change):
         if getattr(obj, 'entered_by', None) is None:

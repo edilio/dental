@@ -60,7 +60,7 @@ class Flight(models.Model):
         super(Flight, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return "{}-{}-{}".format(self.year, self.first_day, self.last_day)
+        return "{} => {}".format(self.first_day, self.last_day)
 
 
 class SpotTime(models.Model):
@@ -109,8 +109,10 @@ class Lead(models.Model):
 
     email = models.EmailField(null=True, blank=True)
 
+    flight = models.ForeignKey(Flight, default=True, blank=True)
+
     entered_date = models.DateField(default=timezone.now)
-    entered_by = models.ForeignKey(settings.AUTH_USER_MODEL, editable=False)
+    entered_by = models.ForeignKey(settings.AUTH_USER_MODEL)
 
     @property
     def short_comments(self):
@@ -130,3 +132,10 @@ class Lead(models.Model):
 
     def __unicode__(self):
         return '{} phone: {}'.format(self.name, self.phone_number)
+
+    def save(self, *args, **kwargs):
+        now = timezone.now()
+        flights = Flight.objects.filter(first_day__lte=now, last_day__gte=now)
+        if flights:
+            self.flight = flights[0]
+        super(Lead, self).save(*args, **kwargs)
