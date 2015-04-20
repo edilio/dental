@@ -8,8 +8,16 @@ def get_model(app, model_name):
     return apps.get_app_config(app).get_model(model_name)
 
 
+class AdType(models.Model):
+    name = models.CharField(max_length=20)
+
+    def __unicode__(self):
+        return self.name
+
+
 class Vehicle(models.Model):
     name = models.CharField(max_length=70)
+    ad_type = models.ForeignKey(AdType, default=1)
 
     def __unicode__(self):
         return self.name

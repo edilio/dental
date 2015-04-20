@@ -1,13 +1,19 @@
 
 from django.contrib import admin
-from .models import Vehicle, Flight, Category, SpotTime, Lead, DentalOffice
+from .models import Vehicle, Flight, Category, SpotTime, Lead, DentalOffice, AdType
 
 from spot_times import guess_vehicle
 
 
+@admin.register(AdType)
+class AdTypeAdmin(admin.ModelAdmin):
+    list_display = ('name', )
+
+
 @admin.register(Vehicle)
 class VehicleAdmin(admin.ModelAdmin):
-    list_display = ('name', )
+    list_display = ('name', 'ad_type')
+    list_filter = ('ad_type', )
 
 
 @admin.register(DentalOffice)
