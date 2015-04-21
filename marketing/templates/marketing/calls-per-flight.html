@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html ng-app="callsApp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Calls per Flight</title>
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.0-rc.0/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.0-rc.0/angular-resource.js"></script>
+
+
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
+    <style>
+        body{
+            width:1060px;
+            margin:50px auto;
+        }
+        path {  stroke: #fff; }
+        path:hover {  opacity:0.9; }
+        rect:hover {  fill:blue; }
+        .axis {  font: 10px sans-serif; }
+        .legend tr{    border-bottom:1px solid grey; }
+        .legend tr:first-child{    border-top:1px solid grey; }
+
+        .axis path,
+        .axis line {
+          fill: none;
+          stroke: #000;
+          shape-rendering: crispEdges;
+        }
+
+        .x.axis path {  display: none; }
+        .legend{
+            margin-bottom:76px;
+            display:inline-block;
+            border-collapse: collapse;
+            border-spacing: 0px;
+        }
+        .legend td{
+            padding:4px 5px;
+            vertical-align:bottom;
+        }
+        .legendFreq, .legendPerc{
+            align:right;
+            width:50px;
+        }
+    </style>
+</head>
+<body>
+    <div ng-controller="CallsController">
+        <h1>Calls per Flight</h1>
+        <label>Select Year</label>
+        <select name="year" ng-model="year">
+            <option value="all">All</option>
+            {% for year in years %}
+                <option value="{{ year.year }}">{{ year.year }}</option>
+            {% endfor %}
+        </select>
+        <br/>
+        <label>Select Flight</label>
+
+        <select ng-model="flight" ng-options="item.number for item in getFlights()"></select>
+        <br/>
+        <label>Select Ad Type</label>
+        <select name="ad_type" ng-model="ad_type">
+            <option value="all">All</option>
+            {% for t in ad_types %}
+                <option value="{{ t.id }}">{{ t.name }}</option>
+            {% endfor %}
+        </select>
+        <br/>
+        <input type="checkbox" ng-model="showData">Show Data</input><br/>
+        <button ng-click="getCalls();">Refresh</button>
+
+        <div id="container-marketing" style="min-width: 300px; height: 400px; margin: 0 auto"></div>
+
+        <div ng-show="showData">
+            <table>
+                <tr>
+                    <th>Entered Date</th>
+                    <th>Call</th>
+                </tr>
+                {% verbatim %}
+                    <tr ng-repeat="c in calls">
+                        <td>{{ c.entered_date }}</td>
+                        <td>{{ c.count }}</td>
+                    </tr>
+                {% endverbatim %}
+            </table>
+        </div>
+    </div>
+    <script>
+        angular.module('callsApp', ['ngResource'])
+          .config(['$resourceProvider', '$httpProvider', function($resourceProvider, $httpProvider) {
+           // Don't strip trailing slashes from calculated URLs
+            $resourceProvider.defaults.stripTrailingSlashes = false;
+            $httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token|escapejs }}';
+          }])
+{#          .factory('Leads', ['$resource', function($resource) {#}
+{#            return $resource('/marketing/api/leads/:id', {id:'@id'},#}
+{#                {#}
+{#                    'update': { method:'PUT' }#}
+{#                });#}
+{#            }])#}
+          .factory('Calls', ['$resource', function($resource) {
+            return $resource('/marketing/api/calls/:id', {id:'@id'});
+            }])
+          .controller('CallsController', [
+                    '$scope',
+                    '$timeout',
+{#                    'Leads',#}
+                    'Calls',
+                    function($scope, $timeout, Calls) {
+                $scope.flights = [
+                    {
+                        id: 0,
+                        number: "all",
+                        year: 0,
+                        first_day: "",
+                        last_day: ""
+                    },
+                    {% for flight in flights %}
+                        {
+                            id: {{ flight.id }},
+                            number: "#{{ flight.number }}",
+                            year: {{ flight.year }},
+                            first_day: "{{ flight.first_day }}",
+                            last_day: "{{ flight.last_day }}"
+                        }
+                        {% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                ];
+                $scope.flight = $scope.flights[0];
+                $scope.ad_type = "all";
+                $scope.showData = false;
+                $scope.year = (new Date()).getFullYear().toString();
+
+                $scope.getFlights = function () {
+                    var year = $scope.year;
+                    if (year === 'all'){
+                        return $scope.flights;
+                    }
+                    else {
+                        return $scope.flights.filter(function(f){ return f.year == year});
+                    }
+                };
+
+{#                $scope.leads = Leads.query();#}
+
+                $scope.getCalls = function () {
+                    var params = {};
+                    if ($scope.flight.number !== 'all') {
+                        params.flight = $scope.flight.id;
+                    }
+                    if (($scope.ad_type !== undefined) && ($scope.ad_type !== 'all')) {
+                        params.ad_type = $scope.ad_type;
+                    }
+                    $scope.calls = Calls.query(params);
+                    $timeout(function(){
+                        if ($scope.calls !== undefined){
+                            $scope.refreshChart();
+                        }
+
+                    }, 500);
+
+                };
+                $scope.calls = $scope.getCalls();
+
+                $scope.refreshChart = function () {
+                    $('#container-marketing').highcharts({
+                        chart: {
+                            type: 'column'
+                        },
+                        title: {
+                            text: 'Calls per Flight {{ year }}'
+                        },
+                        subtitle: {
+                            text: 'Flight: ' + $scope.flight.number + ' Ad Type: ' + $("select[name='ad_type'] option:selected").text()
+                        },
+                        xAxis: {
+                            type: 'category',
+                            labels: {
+                                rotation: -45,
+                                style: {
+                                    fontSize: '13px',
+                                    fontFamily: 'Verdana, sans-serif'
+                                }
+                            }
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: 'Calls'
+                            }
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        tooltip: {
+                            pointFormat: 'Calls in {{ year }}'
+                        },
+                        series: [{
+                            name: 'Calls',
+                            data: $scope.calls.map(function(i){
+                                return [i.entered_date, i.count];
+                            }),
+                            dataLabels: {
+                                enabled: true,
+                                rotation: -90,
+                                color: '#FFFFFF',
+                                align: 'right',
+                                format: '{point.y:.0f}', // one decimal
+                                y: 10, // 10 pixels down from the top
+                                style: {
+                                    fontSize: '13px',
+                                    fontFamily: 'Verdana, sans-serif'
+                                }
+                            }
+                        }]
+                    });
+                }
+          }]);
+
+    </script>
+
+</body>
+</html>

@@ -130,6 +130,9 @@ class Lead(models.Model):
         else:
             return None
 
+    def get_ad_type(self):
+        return self.vehicle.ad_type.id
+
     def __unicode__(self):
         return '{} phone: {}'.format(self.name, self.phone_number)
 
