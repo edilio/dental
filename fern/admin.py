@@ -1,8 +1,9 @@
-from datetime import date
+from datetime import date, timedelta
 
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 
 from .models import Source, Patient, HappyBirthdayPatient
 
@@ -59,7 +60,81 @@ class MonthBornListFilter(SimpleListFilter):
             return queryset.filter(birth_date__month=value)
 
 
+class AgeListFilter(SimpleListFilter):
+    title = _('age')
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'age'
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples. The first element in each
+        tuple is the coded value for the option that will
+        appear in the URL query. The second element is the
+        human-readable name for the option that will appear
+        in the right sidebar.
+        """
+        return (
+            ('infant', _('infant')),
+            ('toddler', _('toddler')),
+            ('kid', _('kid')),
+            ('teenager', _('teenager')),
+            ('young adult', _('young adult')),
+            ('adult', _('adult')),
+            ('middle aged', _('middle aged')),
+            ('senior citizens', _('senior citizens')),
+        )
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+        value = self.value()
+        days_per_year = 365.24
+        now = timezone.now()
+        if value == 'infant':
+            from_date = now + timedelta(-1*days_per_year)
+            return queryset.filter(birth_date__gt=from_date)
+        if value == 'toddler':
+            from_date = now + timedelta(-2*days_per_year)
+            to_date = now + timedelta(-1*days_per_year)
+            return queryset.filter(birth_date__gt=from_date, birth_date__lt=to_date)
+        if value == 'kid':
+            from_date = now + timedelta(-12*days_per_year)
+            to_date = now + timedelta(-2*days_per_year)
+            return queryset.filter(birth_date__gt=from_date, birth_date__lt=to_date)
+        if value == 'teenager':
+            from_date = now + timedelta(-19*days_per_year)
+            to_date = now + timedelta(-12*days_per_year)
+            return queryset.filter(birth_date__gt=from_date, birth_date__lt=to_date)
+        if value == 'young adult':
+            from_date = now + timedelta(-25*days_per_year)
+            to_date = now + timedelta(-19*days_per_year)
+            return queryset.filter(birth_date__gt=from_date, birth_date__lt=to_date)
+        if value == 'adult':
+            from_date = now + timedelta(-40*days_per_year)
+            to_date = now + timedelta(-25*days_per_year)
+            return queryset.filter(birth_date__gt=from_date, birth_date__lt=to_date)
+        if value == 'middle aged':
+            from_date = now + timedelta(-62*days_per_year)
+            to_date = now + timedelta(-40*days_per_year)
+            return queryset.filter(birth_date__gt=from_date, birth_date__lt=to_date)
+        if value == 'senior citizens':
+            to_date = now + timedelta(-62*days_per_year)
+            return queryset.filter(birth_date__lt=to_date)
+
+# infant (< 1 year)
+# toddler (between 1 to 2 years)
+# kid (before puberty)
+# teenager (after puberty but < 19 years)
+# young adult (between 19 to 25 years)
+# simply called adult??
+# middle aged person( 40-62)
+# senior citizens > 62
+
 @admin.register(HappyBirthdayPatient)
 class HappyBirthdayPatientAdmin(admin.ModelAdmin):
     list_display = ('fullname', 'address', 'birth_date', 'birth_date_month', 'age')
-    list_filter = (MonthBornListFilter, )
+    list_filter = (MonthBornListFilter, AgeListFilter)
