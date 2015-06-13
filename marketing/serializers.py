@@ -9,6 +9,11 @@ class LeadSerializer(serializers.ModelSerializer):
         model = Lead
 
 
+class AdTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdType
+
+
 class CallSerializer(serializers.Serializer):
     entered_date = serializers.DateField(format="%m/%d/%Y")
     count = serializers.IntegerField()

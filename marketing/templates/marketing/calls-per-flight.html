@@ -62,14 +62,15 @@
         <select ng-model="flight" ng-options="item.number for item in getFlights()"></select>
         <br/>
         <label>Select Ad Type</label>
-        <select name="ad_type" ng-model="ad_type">
-            <option value="all">All</option>
-            {% for t in ad_types %}
-                <option value="{{ t.id }}">{{ t.name }}</option>
-            {% endfor %}
-        </select>
+        <select ng-model="ad_type" ng-options="item.name for item in ad_types"></select>
+{#        <select name="ad_type" ng-model="ad_type">#}
+{#            <option value="all">All</option>#}
+{#            {% for t in ad_types %}#}
+{#                <option value="{{ t.id }}">{{ t.name }}</option>#}
+{#            {% endfor %}#}
+{#        </select>#}
         <br/>
-        <input type="checkbox" ng-model="showData">Show Data</input><br/>
+        <input type="checkbox" ng-model="showData"/>Show Data<br/>
         <button ng-click="getCalls();">Refresh</button>
 
         <div id="container-marketing" style="min-width: 300px; height: 400px; margin: 0 auto"></div>
@@ -96,21 +97,19 @@
             $resourceProvider.defaults.stripTrailingSlashes = false;
             $httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token|escapejs }}';
           }])
-{#          .factory('Leads', ['$resource', function($resource) {#}
-{#            return $resource('/marketing/api/leads/:id', {id:'@id'},#}
-{#                {#}
-{#                    'update': { method:'PUT' }#}
-{#                });#}
-{#            }])#}
+          .factory('AdTypes', ['$resource', function($resource) {
+            return $resource('/marketing/api/ad-types/:id', {id:'@id'});
+
+            }])
           .factory('Calls', ['$resource', function($resource) {
             return $resource('/marketing/api/calls/:id', {id:'@id'});
             }])
           .controller('CallsController', [
                     '$scope',
                     '$timeout',
-{#                    'Leads',#}
+                    'AdTypes',
                     'Calls',
-                    function($scope, $timeout, Calls) {
+                    function($scope, $timeout, AdTypes, Calls) {
                 $scope.flights = [
                     {
                         id: 0,
@@ -145,7 +144,7 @@
                     }
                 };
 
-{#                $scope.leads = Leads.query();#}
+                $scope.ad_types = AdTypes.query();
 
                 $scope.getCalls = function () {
                     var params = {};

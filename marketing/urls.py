@@ -6,6 +6,7 @@ from . import views
 
 router = routers.DefaultRouter()
 router.register(r'leads', views.LeadViewSet)
+router.register(r'ad-types', views.AdTypeViewSet)
 
 urlpatterns = patterns('marketing.views',
     url(r'^api/', include(router.urls)),

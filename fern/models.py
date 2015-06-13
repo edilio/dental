@@ -37,3 +37,25 @@ class Patient(models.Model):
 
     def __unicode__(self):
         return self.fullname
+
+
+class HappyBirthdayPatient(models.Model):
+    fullname = models.CharField(max_length=50)
+    birth_date = models.DateField()
+    address = models.CharField(max_length=120)
+
+    @property
+    def birth_date_month(self):
+        return self.birth_date.strftime('%B')
+
+    @property
+    def age(self):
+        if self.birth_date:
+            bday = self.birth_date
+            d = datetime.date.today()
+            return (d.year - bday.year) - int((d.month, d.day) < (bday.month, bday.day))
+        else:
+            return None
+
+    def __unicode__(self):
+        return self.fullname

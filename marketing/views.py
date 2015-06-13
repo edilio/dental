@@ -5,7 +5,7 @@ from rest_framework import viewsets, filters, generics
 from rest_framework.response import Response
 
 from .models import *
-from .serializers import LeadSerializer, CallSerializer
+from .serializers import LeadSerializer, CallSerializer, AdTypeSerializer
 
 
 def calls_per_flight(request):
@@ -32,6 +32,12 @@ class LeadViewSet(viewsets.ModelViewSet):
         if ad_type is not None:
             qs = qs.filter(vehicle__ad_type=ad_type)
         return qs
+
+
+class AdTypeViewSet(viewsets.ModelViewSet):
+    model = AdType
+    serializer_class = AdTypeSerializer
+    queryset = AdType.objects.all()
 
 
 class CallListView(generics.ListAPIView):
