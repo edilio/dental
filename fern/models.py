@@ -39,10 +39,18 @@ class Patient(models.Model):
         return self.fullname
 
 
+TREATMENT_OPTIONS = (
+    (0, 'Implants'),
+    (1, 'Crowns'),
+    (2, 'Laser')
+)
+
+
 class HappyBirthdayPatient(models.Model):
     fullname = models.CharField(max_length=50)
     birth_date = models.DateField()
     address = models.CharField(max_length=120)
+    treatment = models.PositiveSmallIntegerField(default=0, choices=TREATMENT_OPTIONS)
 
     @property
     def birth_date_month(self):

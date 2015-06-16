@@ -136,5 +136,5 @@ class AgeListFilter(SimpleListFilter):
 
 @admin.register(HappyBirthdayPatient)
 class HappyBirthdayPatientAdmin(admin.ModelAdmin):
-    list_display = ('fullname', 'address', 'birth_date', 'birth_date_month', 'age')
-    list_filter = (MonthBornListFilter, AgeListFilter)
+    list_display = ('fullname', 'address', 'birth_date', 'birth_date_month', 'age', 'treatment')
+    list_filter = (MonthBornListFilter, AgeListFilter, 'treatment')
