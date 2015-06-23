@@ -138,3 +138,4 @@ class AgeListFilter(SimpleListFilter):
 class HappyBirthdayPatientAdmin(admin.ModelAdmin):
     list_display = ('fullname', 'address', 'birth_date', 'birth_date_month', 'age', 'treatment')
     list_filter = (MonthBornListFilter, AgeListFilter, 'treatment')
+    search_fields = ('fullname', 'address')
