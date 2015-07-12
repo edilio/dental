@@ -42,7 +42,8 @@ class Patient(models.Model):
 TREATMENT_OPTIONS = (
     (0, 'Implants'),
     (1, 'Crowns'),
-    (2, 'Laser')
+    (2, 'Laser'),
+    (3, 'Surgery from July-2015')
 )
 
 
